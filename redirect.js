@@ -13,5 +13,7 @@ var Redirect = function(orig, callback, identifier) {
     }
 
     // Create the redirection
-    cpp_redirect(orig, callback.length, identifier, convention, callback);
+    var redirect = new cpp_redirect();
+    redirect.init(orig, callback.length, identifier, convention, callback.bind(redirect));
+    return redirect;
 };
