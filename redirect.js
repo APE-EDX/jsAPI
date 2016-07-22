@@ -15,5 +15,15 @@ var Redirect = function(orig, callback, identifier) {
     // Create the redirection
     var redirect = new cpp_redirect();
     redirect.init(orig, callback.length, identifier, convention, callback.bind(redirect));
+
+    // Save it
+    Redirect.active.push(redirect);
+
     return redirect;
+};
+
+Redirect.active = [];
+Redirect.restoreAll = function() {
+    Redirect.active.forEach(function(r) { r.restore(); });
+    Redirect.active = [];
 };

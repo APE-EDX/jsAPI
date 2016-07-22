@@ -1,4 +1,3 @@
-
 function onMessage(msg) {
     var json = JSON.parse(msg);
     var func = this[json.method];
@@ -6,5 +5,5 @@ function onMessage(msg) {
 }
 
 function eval_js(code) {
-    eval(code);
+    eval.apply(null, [code]);
 }
