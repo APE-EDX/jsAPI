@@ -19,14 +19,21 @@ function Find(lib, method, convention) {
 
     // If no convention has been specified or AUTO was used
     convention = convention || CallConvention.AUTO;
+
     if (convention == CallConvention.AUTO) {
-        // WINAPIs are STDCALL
-        if (['kernel32', 'user32', 'gdi32'].indexOf(this.name) >= 0) {
-            convention = CallConvention.STDCALL;
+        var size = ptrSize();
+        if (size == 4) {
+            // WINAPIs (in 32 bits arch. only) are STDCALL
+            if (['kernel32', 'user32', 'gdi32'].indexOf(this.name) >= 0) {
+                convention = CallConvention.STDCALL;
+            }
+            else {
+                // Default to C/C++ standard
+                convention = CallConvention.CDECLCALL;
+            }
         }
-        else {
-            // Default to C/C++ standard
-            convention = CallConvention.CDECLCALL;
+        else if (size == 8) {
+            convention = CallConvention.FASTCALL;
         }
     }
 

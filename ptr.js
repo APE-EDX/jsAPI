@@ -14,7 +14,8 @@ function Ptr(orig, offset, convention) {
     this.offset = offset || 0;
 
     // If no convention has been specified or AUTO was used
-    this.convention = convention >= 0 ? convention : CallConvention.CDECLCALL;
+    this.convention = convention >= 0 ? convention : (
+        ptrSize == 4 ? CallConvention.CDECLCALL : CallConvention.FASTCALL);
 };
 
 // Conversions
@@ -60,6 +61,10 @@ Duktape.Pointer.prototype.string = Ptr.prototype.string = function(len) {
         return cpp_readString(this.address, this.offset, len);
     }
     return cpp_readString(this.address, this.offset);
+};
+
+Duktape.Pointer.prototype.read = Ptr.prototype.read = function(offset) {
+    return cpp_readMemory(this.address, offset || this.offset);
 };
 
 var valueProp = {
