@@ -33,40 +33,38 @@ String.prototype.charCodeAt = function(idx) {
 
 // Override methods on Ptr
 Ptr.prototype.get = function() {
+    if (typeof this.address == "string") {
+        alert("Trying to use get() on a string Ptr");
+    }
     return this.address + this.offset;
 };
 
-Ptr.prototype.string = function(len) {
-    if (len) {
-        return cpp_readString(this.address + this.offset, len);
-    }
-    return cpp_readString(this.address + this.offset);
-};
-
-Object.defineProperty(Ptr.prototype, 'value', {
-    get: function() { return cpp_readMemory(this.address + this.offset); },
-    set: function(newValue) { cpp_writeMemory(this.address + this.offset, newValue); }
-});
-
 
 // Override methods on Pointer
+Object.defineProperty(Duktape.Pointer.prototype, 'address', {
+    get: function() { return this.valueOf(); }
+});
+
+Object.defineProperty(Duktape.Pointer.prototype, 'offset', {
+    get: function() { return 0; }
+});
+
 Duktape.Pointer.prototype.get = function() {
     return parseInt(this.valueOf(), 16);
 };
 
-Duktape.Pointer.prototype.string = function(len) {
+
+// Common
+Duktape.Pointer.prototype.string = Ptr.prototype.string = function(len) {
     if (len) {
-        return cpp_readString(this.valueOf(), len);
+        return cpp_readString(this.address, this.offset, len);
     }
-    return cpp_readString(this.valueOf());
+    return cpp_readString(this.address, this.offset);
 };
 
-Object.defineProperty(Duktape.Pointer.prototype, 'value', {
-    get: function() { return cpp_readMemory(this.valueOf()); },
-    set: function(newValue) { cpp_writeMemory(this.valueOf(), newValue); }
-});
-
-function Ptr64(orig, offset, convention) {
-    this.ptr1 = Ptr(orig);
-    this.ptr2 = Ptr(orig + 4);
+var valueProp = {
+    get: function() { return cpp_readMemory(this.address, this.offset); },
+    set: function(newValue) { cpp_writeMemory(this.address, this.offset, newValue); }
 };
+Object.defineProperty(Ptr.prototype, 'value', valueProp);
+Object.defineProperty(Duktape.Pointer.prototype, 'value', valueProp);
