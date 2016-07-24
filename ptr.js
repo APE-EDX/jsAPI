@@ -51,6 +51,9 @@ Object.defineProperty(Duktape.Pointer.prototype, 'offset', {
 });
 
 Duktape.Pointer.prototype.get = function() {
+    if (this.toString() == "null") {
+        return 0;
+    }
     return parseInt(this.valueOf(), 16);
 };
 
