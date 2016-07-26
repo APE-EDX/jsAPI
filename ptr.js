@@ -28,7 +28,24 @@ var char = function(x) { return String.fromCharCode(uint8(x)); }
 
 // General
 String.prototype.charCodeAt = function(idx) {
-    return cpp_charCodeAt(this, idx);
+    return uint8(cpp_charCodeAt(this, idx));
+}
+
+String.fromCppCharCode = function(code) {
+    return cpp_fromCharCode(code);
+}
+
+String.prototype.map = function(fn) {
+    var result = [];
+    for (var i = 0; i < this.length; ++i) {
+        result.push(fn(i, this[i]));
+    }
+
+    return result;
+}
+
+String.prototype.toCharCodes = function() {
+    return this.map(this.charCodeAt.bind(this));
 }
 
 
