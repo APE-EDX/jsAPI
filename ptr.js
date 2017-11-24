@@ -15,7 +15,7 @@ function Ptr(orig, offset, convention) {
 
     // If no convention has been specified or AUTO was used
     this.convention = convention >= 0 ? convention : (
-        ptrSize == 4 ? CallConvention.CDECLCALL : CallConvention.FASTCALL);
+        ptrSize() == 4 ? CallConvention.CDECLCALL : CallConvention.FASTCALL);
 };
 
 // Conversions
